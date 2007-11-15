@@ -35,6 +35,8 @@ for db in _conf.databases:
 SEKRIT = ''.join(SEKRIT)
 SEKRIT = re.sub('at 0x[a-f0-9]+>', 'at MEMORYADDRESS>', SEKRIT)
 
+_TEST_TIME = None
+
 class Captcha(BrowserView):
     implements(ICaptchaView)
     
@@ -54,16 +56,26 @@ class Captcha(BrowserView):
             self.request.response.setCookie(COOKIE_ID, id, path='/')
             self._session_id = id
     
-    def _generate_word(self):
-        """Create a word for the current session"""
-        session = self.request[COOKIE_ID]
-        seed = sha.new(SEKRIT + session).digest()
+    def _generate_words(self):
+        """Create words for the current session
         
-        word = []
-        for i in range(WORDLENGTH):
-            index = ord(seed[i]) % len(CHARS)
-            word.append(CHARS[index])
-        return ''.join(word)
+        We generate one for the current 5 minutes, plus one for the previous
+        5. This way captcha sessions have a livespan of 10 minutes at most.
+        
+        """
+        session = self.request[COOKIE_ID]
+        nowish = _TEST_TIME or int(time.time() / 300)
+        seeds = [sha.new(SEKRIT + session + str(nowish)).digest(),
+                 sha.new(SEKRIT + session + str(nowish - 5)).digest()]
+        
+        words = []
+        for seed in seeds:
+            word = []
+            for i in range(WORDLENGTH):
+                index = ord(seed[i]) % len(CHARS)
+                word.append(CHARS[index])
+            words.append(''.join(word))
+        return words
     
     def _url(self, type):
         self._generate_session()
@@ -77,12 +89,14 @@ class Captcha(BrowserView):
         return self._url('audio')
         
     def verify(self, input):
+        result = False
         try:
-            result = input.upper() == self._generate_word()
+            for word in self._generate_words():
+                result = result or input.upper() == word
             # Delete the session key, we are done with this captcha
             self.request.response.expireCookie(COOKIE_ID, path='/')
         except KeyError:
-            result = False # No cookie
+            pass # No cookie
         
         return result
         
@@ -98,8 +112,8 @@ class Captcha(BrowserView):
         
     def image(self):
         self._setheaders('image/png')
-        return skimpyAPI.Png(self._generate_word()).data()
+        return skimpyAPI.Png(self._generate_words()[0]).data()
     
     def audio(self):
         self._setheaders('audio/wav')
-        return skimpyAPI.Wave(self._generate_word(), WAVSOUNDS).data()
+        return skimpyAPI.Wave(self._generate_words()[0], WAVSOUNDS).data()

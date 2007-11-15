@@ -1,9 +1,10 @@
 import unittest
 from zope.testing.doctestunit import DocFileSuite
 
-# Set the secret to a constant to keep the tests workable
+# Set the secret and test time to constants to keep the tests workable
 import collective.captcha.browser.captcha as captcha
 captcha.SEKRIT = 'tests-only-stable-value'
+captcha._TEST_TIME = 5
 
 class DummyRequest(object):
     def __init__(self):

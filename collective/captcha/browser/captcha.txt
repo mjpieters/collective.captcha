@@ -38,7 +38,7 @@ doesn't actually give us the word, but we can replay an existing session for the
 
 The verify method, then, tells you if the user entered the correct word:
 
-  >>> view.verify('@SMAJG8')
+  >>> view.verify('LAS4S:/')
   True
   
 Note that the view immediately invalidates the cookie by expiring it:
@@ -48,7 +48,13 @@ Note that the view immediately invalidates the cookie by expiring it:
   
 The verify method works case-insensitively:
 
-  >>> view.verify('@SmAjG8')
+  >>> view.verify('LaS4s:/')
+  True
+  
+The words are valid for a 10 minute period, with a new word for the session every
+5 minutes. Thus, the word for the previous 5 minute period should still be valid:
+
+  >>> view.verify('7MTAS@2')
   True
   
 Verification will fail for both incorrect input and a missing cookie:
@@ -56,7 +62,7 @@ Verification will fail for both incorrect input and a missing cookie:
   >>> view.verify('incorrect')
   False
   >>> del request2.cookies[COOKIE_ID]
-  >>> view.verify('2NHL/VT')
+  >>> view.verify('LAS4S:/')
   False
 
 Displaying
