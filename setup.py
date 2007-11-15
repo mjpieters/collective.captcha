@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 version = '0.1'
 
-setup(name='trunk',
+setup(name='collective.captcha',
       version=version,
       description="Stateless captcha generation and verification",
       long_description="""\
