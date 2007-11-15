@@ -1,6 +1,7 @@
 # Zope Captcha generation
 import os.path
 import random
+import re
 import sha
 import string
 import sys
@@ -10,6 +11,7 @@ from skimpyGimpy import skimpyAPI
 
 from zope.interface import implements
 from Acquisition import aq_inner
+from App.config import getConfiguration
 from Globals import package_home
 from Products.Five import BrowserView
 
@@ -21,6 +23,17 @@ COOKIE_ID = 'captchasessionid'
 WORDLENGTH = 7
 
 WAVSOUNDS = os.path.join(package_home(globals()), 'waveIndex.zip')
+
+# Compute a local secret that is semi-unique to a ZEO cluster or standalone
+# Zope. This is not rock-solid, but enough to deter spam-bots. Note that this
+# assumes Zope clients in a cluster will all have the same <zodb_db *>
+# sections. This keeps Captchas from being predictable
+_conf = getConfiguration()
+SEKRIT = []
+for db in _conf.databases:
+    SEKRIT.append(repr(db.config.storage.config.__dict__))
+SEKRIT = ''.join(SEKRIT)
+SEKRIT = re.sub('at 0x[a-f0-9]+>', 'at MEMORYADDRESS>', SEKRIT)
 
 class Captcha(BrowserView):
     implements(ICaptchaView)
@@ -44,7 +57,7 @@ class Captcha(BrowserView):
     def _generate_word(self):
         """Create a word for the current session"""
         session = self.request[COOKIE_ID]
-        seed = sha.new(session).digest()
+        seed = sha.new(SEKRIT + session).digest()
         
         word = []
         for i in range(WORDLENGTH):

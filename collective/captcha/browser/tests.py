@@ -1,6 +1,10 @@
 import unittest
 from zope.testing.doctestunit import DocFileSuite
 
+# Set the secret to a constant to keep the tests workable
+import collective.captcha.browser.captcha as captcha
+captcha.SEKRIT = 'tests-only-stable-value'
+
 class DummyRequest(object):
     def __init__(self):
         self.cookies = {}
