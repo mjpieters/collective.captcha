@@ -58,4 +58,3 @@ Verification will fail for both incorrect input and a missing cookie:
   >>> del request2.cookies[COOKIE_ID]
   >>> view.verify('2NHL/VT')
   False
-

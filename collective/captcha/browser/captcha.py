@@ -18,7 +18,6 @@ WORDLENGTH = 7
 class Captcha(BrowserView):
     implements(ICaptchaView)
     
-    _id_count = 0
     _session_id = None
     __name__ = 'captcha'
     
@@ -32,21 +31,12 @@ class Captcha(BrowserView):
         """
         if self._session_id is None:
             id = sha.new(str(random.randrange(sys.maxint))).hexdigest()
-            base = name = COOKIE_ID
-            while name in self.request:
-                self._id_count += 1
-                name = base + str(self._id_count)
-            self.request.response.setCookie(name, id, path='/')
+            self.request.response.setCookie(COOKIE_ID, id, path='/')
             self._session_id = id
-        return self._session_id
     
     def _generate_word(self):
         """Create a word for the current session"""
-        cookie_id = COOKIE_ID
-        if self._id_count:
-            cookie_id += str(self._id_count)
-        session = self.request[cookie_id]
-        
+        session = self.request[COOKIE_ID]
         seed = sha.new(session).digest()
         
         word = []
@@ -64,12 +54,11 @@ class Captcha(BrowserView):
         return self
     
     def _url(self, type):
-        count = self._generate_session()
-        url = (aq_inner(self.context).absolute_url(), '@@' + self.__name__,
-               type)
-        if self._id_count:
-            url.insert(2, str(self._id_count))
-        return '/'.join(url)
+        self._generate_session()
+        return '/'.join((
+            aq_inner(self.context).absolute_url(), 
+            '@@' + self.__name__,
+            type))
     
     def image_tag(self):
         return '<img src="%s" />' % (self._url('image'),)
@@ -81,10 +70,7 @@ class Captcha(BrowserView):
         try:
             result = input.upper() == self._generate_word()
             # Delete the session key, we are done with this captcha
-            cookie_id = COOKIE_ID
-            if self._id_count:
-                cookie_id += str(self._id_count)
-            self.request.response.expireCookie(cookie_id, path='/')
+            self.request.response.expireCookie(COOKIE_ID, path='/')
         except KeyError:
             result = False # No cookie
         
