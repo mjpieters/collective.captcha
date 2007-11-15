@@ -45,7 +45,7 @@ class Captcha(BrowserView):
         cookie_id = COOKIE_ID
         if self._id_count:
             cookie_id += str(self._id_count)
-        session = self.request(cookie_id)
+        session = self.request[cookie_id]
         
         seed = sha.new(session).digest()
         
