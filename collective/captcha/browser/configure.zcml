@@ -5,10 +5,10 @@
     
   <browser:view
       name="captcha"
-      for"*"
+      for="*"
       permission="zope2.Public"
       provides=".interfaces.ICaptchaView"
-      classs=".captcha.CaptchaView"
+      class=".captcha.CaptchaView"
       >
     
     <browser:page name="image" attribute="image" />
