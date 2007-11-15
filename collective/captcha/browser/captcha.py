@@ -44,13 +44,7 @@ class Captcha(BrowserView):
     __name__ = 'captcha'
     
     def _generate_session(self):
-        """Ensure a session id exists
-        
-        Returns an integer counter of the number of captcha sessions active
-        besides ourselves. Use this counter to ensure we get the correct
-        session for an image or file.
-        
-        """
+        """Ensure a session id exists"""
         if self._session_id is None:
             id = sha.new(str(random.randrange(sys.maxint))).hexdigest()
             self.request.response.setCookie(COOKIE_ID, id, path='/')
