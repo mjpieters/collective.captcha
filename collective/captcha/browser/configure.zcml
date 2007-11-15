@@ -2,5 +2,18 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="nortek.website.deployment">
+    
+  <browser:view
+      name="captcha"
+      for"*"
+      permission="zope2.Public"
+      provides=".interfaces.ICaptchaView"
+      classs=".captcha.CaptchaView"
+      >
+    
+    <browser:page name="image" attribute="image" />
+    <browser:page name="audio" attribute="audio" />
+  
+  </browser:view>
 
 </configure>
