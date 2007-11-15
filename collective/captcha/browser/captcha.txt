@@ -1,8 +1,15 @@
+========
+Captchas
+========
+
+Generation
+----------
+
 To use the captcha view, simply look up the view using the component architecture.
 
 Here, we'll just import the view directly to demonstrate it's use:
 
-  >>> from collective.captcha.browser.captcha import Captcha
+  >>> from collective.captcha.browser.captcha import Captcha, COOKIE_ID
   >>> request = DummyRequest()
   >>> context = DummyContext()
   >>> view = Captcha(context, request)
@@ -16,9 +23,39 @@ We can now use the view to generate an image tag, and a audio_url:
 
 The request now holds the state in a cookie:
 
-  >>> 'captchasessionid' in request.cookies
+  >>> COOKIE_ID in request.cookies
   True
   
+Verification
+------------
+
 With that state, we can verify that the user has given us the correct word. The view
-doesn't actually have 
+doesn't actually give us the word, but we can replay an existing session for the test:
+
+  >>> request2 = DummyRequest()
+  >>> request2.setCookie(COOKIE_ID, '6552fec8867ee2a85a44784dda007e49efcf50ef')
+  >>> view = Captcha(context, request2)
+
+The verify method, then, tells you if the user entered the correct word:
+
+  >>> view.verify('2NHL/VT')
+  True
   
+Note that the view immediately invalidates the cookie by expiring it:
+
+  >>> COOKIE_ID in request2.expiredcookies
+  True
+  
+The verify method works case-insensitively:
+
+  >>> view.verify('2nHl/Vt')
+  True
+  
+Verification will fail for both incorrect input and a missing cookie:
+
+  >>> view.verify('incorrect')
+  False
+  >>> del request2.cookies[COOKIE_ID]
+  >>> view.verify('2NHL/VT')
+  False
+

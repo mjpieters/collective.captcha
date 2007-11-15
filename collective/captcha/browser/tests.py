@@ -4,16 +4,17 @@ from zope.testing.doctestunit import DocFileSuite
 class DummyRequest(object):
     def __init__(self):
         self.cookies = {}
+        self.expiredcookies = set()
     
     @property
     def response(self):
         return self
     
-    def setCookie(self, name, value, path):
+    def setCookie(self, name, value, path=None):
         self.cookies[name] = value
     
-    def expireCookie(self, name, path):
-        del self.cookies[name]
+    def expireCookie(self, name, path=None):
+        self.expiredcookies.add(name)
         
     def __contains__(self, name):
         return name in self.cookies

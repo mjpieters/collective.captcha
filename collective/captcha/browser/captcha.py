@@ -78,9 +78,16 @@ class Captcha(BrowserView):
         return self._url('audio')
         
     def verify(self, input):
-        result = input.upper() == self._generate_word()
-        # Delete the session key, we are done with this captcha
-        self.request.response.expireCookie(name, path='/')
+        try:
+            result = input.upper() == self._generate_word()
+            # Delete the session key, we are done with this captcha
+            cookie_id = COOKIE_ID
+            if self._id_count:
+                cookie_id += str(self._id_count)
+            self.request.response.expireCookie(cookie_id, path='/')
+        except KeyError:
+            result = False # No cookie
+        
         return result
         
     def image(self):
