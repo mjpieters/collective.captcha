@@ -72,8 +72,7 @@ class Captcha(BrowserView):
         return '/'.join(url)
     
     def image_tag(self):
-        return '<img src="%s" width="200", height="100"/>' % (
-            self._url('image'),)
+        return '<img src="%s" />' % (self._url('image'),)
     
     def audio_url(self):
         return self._url('audio')
