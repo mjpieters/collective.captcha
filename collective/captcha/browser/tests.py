@@ -5,6 +5,7 @@ class DummyRequest(object):
     def __init__(self):
         self.cookies = {}
         self.expiredcookies = set()
+        self.headers = {}
     
     @property
     def response(self):
@@ -15,6 +16,12 @@ class DummyRequest(object):
     
     def expireCookie(self, name, path=None):
         self.expiredcookies.add(name)
+        
+    def setContentType(self, type):
+        self.addHeader('content-type', type)
+        
+    def addHeader(self, name, value):
+        self.headers[name] = value
         
     def __contains__(self, name):
         return name in self.cookies

@@ -1,11 +1,16 @@
 # Zope Captcha generation
+import os.path
 import random
 import sha
 import string
 import sys
+import time
+
+from skimpyGimpy import skimpyAPI
 
 from zope.interface import implements
 from Acquisition import aq_inner
+from Globals import package_home
 from Products.Five import BrowserView
 
 from interfaces import ICaptchaView
@@ -14,6 +19,8 @@ CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789@:.-/' # no 0/O and I/1 confusion
 
 COOKIE_ID = 'captchasessionid'
 WORDLENGTH = 7
+
+WAVSOUNDS = os.path.join(package_home(globals()), 'waveIndex.zip')
 
 class Captcha(BrowserView):
     implements(ICaptchaView)
@@ -44,21 +51,11 @@ class Captcha(BrowserView):
             index = ord(seed[i]) % len(CHARS)
             word.append(CHARS[index])
         return ''.join(word)
-        
-    def publishTraverse(self, name, request):
-        try:
-            counter = int(name)
-        except ValueError:
-            raise KeyError('No such captcha session')
-        self._id_count = counter
-        return self
     
     def _url(self, type):
         self._generate_session()
-        return '/'.join((
-            aq_inner(self.context).absolute_url(), 
-            '@@' + self.__name__,
-            type))
+        return '%s/@@%s/%s' % (
+            aq_inner(self.context).absolute_url(), self.__name__, type)
     
     def image_tag(self):
         return '<img src="%s" />' % (self._url('image'),)
@@ -76,9 +73,20 @@ class Captcha(BrowserView):
         
         return result
         
+    # Binary data subpages
+    
+    def _setheaders(self, type):
+        resp = self.request.response
+        resp.setContentType(type)
+        # no caching please
+        resp.addHeader('cache-control', 'no-cache, no-store')
+        resp.addHeader('pragma', 'no-cache')
+        resp.addHeader('expires', 'now')
+        
     def image(self):
-        pass
+        self._setheaders('image/png')
+        return skimpyAPI.Png(self._generate_word()).data()
     
     def audio(self):
-        pass
-
+        self._setheaders('audio/wav')
+        return skimpyAPI.Wave(self._generate_word(), WAVSOUNDS).data()

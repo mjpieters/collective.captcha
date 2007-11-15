@@ -58,3 +58,25 @@ Verification will fail for both incorrect input and a missing cookie:
   >>> del request2.cookies[COOKIE_ID]
   >>> view.verify('2NHL/VT')
   False
+
+Displaying
+----------
+
+The point of course is that the end-user gets to view the captcha image or listen to the 
+audio file:
+
+  >>> request = DummyRequest()
+  >>> request.setCookie(COOKIE_ID, '6552fec8867ee2a85a44784dda007e49efcf50ef')
+  >>> view = Captcha(context, request)
+
+  >>> image = view.image()
+  >>> image.startswith('\x89PNG')
+  True
+  >>> request.headers['content-type']
+  'image/png'
+
+  >>> audio = view.audio()
+  >>> audio.startswith('RIFF')
+  True
+  >>> request.headers['content-type']
+  'audio/wav'
