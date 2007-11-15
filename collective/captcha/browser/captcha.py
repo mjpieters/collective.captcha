@@ -31,14 +31,14 @@ class Captcha(BrowserView):
         
         """
         if self._session_id is None:
-            id = sha.new(random.int(sys.maxint)).hexdigest()
+            id = sha.new(str(random.randrange(sys.maxint))).hexdigest()
             base = name = COOKIE_ID
             while name in self.request:
                 self._id_count += 1
                 name = base + str(self._id_count)
             self.request.response.setCookie(name, id, path='/')
             self._session_id = id
-        return self._session[0]
+        return self._session_id
     
     def _generate_word(self):
         """Create a word for the current session"""

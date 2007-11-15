@@ -1,0 +1,24 @@
+To use the captcha view, simply look up the view using the component architecture.
+
+Here, we'll just import the view directly to demonstrate it's use:
+
+  >>> from collective.captcha.browser.captcha import Captcha
+  >>> request = DummyRequest()
+  >>> context = DummyContext()
+  >>> view = Captcha(context, request)
+
+We can now use the view to generate an image tag, and a audio_url:
+
+  >>> view.image_tag()
+  '<img src="dummyurl/@@captcha/image" />'
+  >>> view.audio_url()
+  'dummyurl/@@captcha/audio'
+
+The request now holds the state in a cookie:
+
+  >>> 'captchasessionid' in request.cookies
+  True
+  
+With that state, we can verify that the user has given us the correct word. The view
+doesn't actually have 
+  
