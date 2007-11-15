@@ -8,7 +8,7 @@ from zope.interface import implements
 from Acquisition import aq_inner
 from Products.Five import BrowserView
 
-from collective.captcha.interfaces import ICaptchaView
+from interfaces import ICaptchaView
 
 CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789@:.-/' # no 0/O and I/1 confusion
 
@@ -20,6 +20,7 @@ class Captcha(BrowserView):
     
     _id_count = 0
     _session_id = None
+    __name__ = 'captcha'
     
     def _generate_session(self):
         """Ensure a session id exists
