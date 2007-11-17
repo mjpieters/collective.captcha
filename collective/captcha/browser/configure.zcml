@@ -8,7 +8,7 @@
       for="*"
       permission="zope2.Public"
       provides=".interfaces.ICaptchaView"
-      class=".captcha.CaptchaView"
+      class=".captcha.Captcha"
       >
     
     <browser:page name="image" attribute="image" />
