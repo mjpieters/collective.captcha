@@ -22,10 +22,7 @@ class DummyRequest(object):
     def expireCookie(self, name, path=None):
         self.expiredcookies.add(name)
         
-    def setContentType(self, type):
-        self.addHeader('content-type', type)
-        
-    def addHeader(self, name, value):
+    def setHeader(self, name, value):
         self.headers[name] = value
         
     def __contains__(self, name):

@@ -98,16 +98,18 @@ class Captcha(BrowserView):
     
     def _setheaders(self, type):
         resp = self.request.response
-        resp.setContentType(type)
+        resp.setHeader('content-type', type)
         # no caching please
-        resp.addHeader('cache-control', 'no-cache, no-store')
-        resp.addHeader('pragma', 'no-cache')
-        resp.addHeader('expires', 'now')
+        resp.setHeader('cache-control', 'no-cache, no-store')
+        resp.setHeader('pragma', 'no-cache')
+        resp.setHeader('expires', 'now')
         
     def image(self):
+        """Generate a captcha image"""
         self._setheaders('image/png')
         return skimpyAPI.Png(self._generate_words()[0]).data()
     
     def audio(self):
+        """Generate a captcha audio file"""
         self._setheaders('audio/wav')
         return skimpyAPI.Wave(self._generate_words()[0], WAVSOUNDS).data()
