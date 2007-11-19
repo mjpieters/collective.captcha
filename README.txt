@@ -23,4 +23,4 @@ License:
 Requirements:
   SkimpyGimpy_
   
-_SkimpyGimpy: http://skimpygimpy.sourceforge.net/
+.. _SkimpyGimpy: http://skimpygimpy.sourceforge.net/
