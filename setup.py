@@ -22,7 +22,7 @@ setup(name='collective.captcha',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['collective'],
       include_package_data=True,
-      zip_safe=True,
+      zip_safe=False,
       install_requires=[
           'setuptools',
           # SkimpyGimpy has no pypi entry
