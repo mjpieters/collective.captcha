@@ -17,12 +17,15 @@ from Products.Five import BrowserView
 
 from interfaces import ICaptchaView
 
-CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789@:.-/' # no 0/O and I/1 confusion
+CHARS = 'abcdefghjklmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789@:.-/'
+# note: no 0/o/O and i/I/1 confusion
 
 COOKIE_ID = 'captchasessionid'
 WORDLENGTH = 7
 
-WAVSOUNDS = os.path.join(package_home(globals()), 'waveIndex.zip')
+_package_home = package_home(globals())
+WAVSOUNDS = os.path.join(_package_home, 'waveIndex.zip')
+VERAMONO = os.path.join(_package_home, 'arevmoit.bdf')
 
 # Compute a local secret that is semi-unique to a ZEO cluster or standalone
 # Zope. This is not rock-solid, but enough to deter spam-bots. Note that this
@@ -86,7 +89,7 @@ class Captcha(BrowserView):
         result = False
         try:
             for word in self._generate_words():
-                result = result or input.upper() == word
+                result = result or input.upper() == word.upper()
             # Delete the session key, we are done with this captcha
             self.request.response.expireCookie(COOKIE_ID, path='/')
         except KeyError:
@@ -107,7 +110,8 @@ class Captcha(BrowserView):
     def image(self):
         """Generate a captcha image"""
         self._setheaders('image/png')
-        return skimpyAPI.Png(self._generate_words()[0]).data()
+        return skimpyAPI.Png(self._generate_words()[0],
+                             fontpath=VERAMONO).data()
     
     def audio(self):
         """Generate a captcha audio file"""
