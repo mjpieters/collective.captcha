@@ -1,7 +1,7 @@
 import os
 from setuptools import setup, find_packages
 
-version = '0.1'
+version = '1.0'
 
 setup(name='collective.captcha',
       version=version,
@@ -25,6 +25,7 @@ setup(name='collective.captcha',
       zip_safe=True,
       install_requires=[
           'setuptools',
+          # SkimpyGimpy has no pypi entry
           # -*- Extra requirements: -*-
       ],
       entry_points="""
