@@ -50,8 +50,14 @@ class Captcha(BrowserView):
         """Ensure a session id exists"""
         if self._session_id is None:
             id = sha.new(str(random.randrange(sys.maxint))).hexdigest()
-            self.request.response.setCookie(COOKIE_ID, id, path='/')
             self._session_id = id
+            
+            resp = self.request.response
+            if COOKIE_ID in resp.cookies:
+                # clear the cookie first, clearing out any expiration cookie
+                # that may have been set during verification
+                del resp.cookies[COOKIE_ID]
+            resp.setCookie(COOKIE_ID, id, path='/')
     
     def _generate_words(self):
         """Create words for the current session
