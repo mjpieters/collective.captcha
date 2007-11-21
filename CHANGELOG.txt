@@ -2,8 +2,8 @@
 collective.captcha changes
 --------------------------
 
-1.1 (svn/unreleased)
---------------------
+1.1 (2007-11-21)
+----------------
 
 - Delete the captcha cookie from the response if one is present to
   prevent premature expiration. This would happen when creating a
