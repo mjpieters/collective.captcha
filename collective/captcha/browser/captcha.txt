@@ -43,7 +43,7 @@ The verify method, then, tells you if the user entered the correct word:
   
 Note that the view immediately invalidates the cookie by expiring it:
 
-  >>> COOKIE_ID in request2.expiredcookies
+  >>> request2.cookies[COOKIE_ID].get('expired', False)
   True
   
 The verify method works case-insensitively:
@@ -57,6 +57,16 @@ The words are valid for a 10 minute period, with a new word for the session ever
   >>> view.verify('HmV49.C')
   True
   
+  To facilitate displaying a new captcha when verification fails or validation 
+  of a form fails for other reasons, the view makes sure to not expire the 
+  cookie but to set a new value instead:
+
+    >>> view2 = Captcha(context, request2)
+    >>> view2.audio_url()
+    'dummyurl/@@captcha/audio'
+    >>> request2.cookies[COOKIE_ID].get('expired', False)
+    False
+
 Verification will fail for both incorrect input and a missing cookie:
 
   >>> view.verify('incorrect')

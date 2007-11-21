@@ -1,0 +1,17 @@
+--------------------------
+collective.captcha changes
+--------------------------
+
+1.1 (svn/unreleased)
+--------------------
+
+- Delete the captcha cookie from the response if one is present to
+  prevent premature expiration. This would happen when creating a
+  new captcha after verification (because verification failed or
+  the form would have to be redisplayed for other reasons). Thanks to
+  David Glick for pointing this out.
+
+1.0 (2007-11-19)
+----------------
+
+- Initial release

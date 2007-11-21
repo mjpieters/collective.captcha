@@ -9,7 +9,6 @@ captcha._TEST_TIME = 5
 class DummyRequest(object):
     def __init__(self):
         self.cookies = {}
-        self.expiredcookies = set()
         self.headers = {}
     
     @property
@@ -17,11 +16,15 @@ class DummyRequest(object):
         return self
     
     def setCookie(self, name, value, path=None):
-        self.cookies[name] = value
+        cookie = self.cookies.get(name, {})
+        cookie.update(dict(value=value, path=path))
+        self.cookies[name] = cookie
     
     def expireCookie(self, name, path=None):
-        self.expiredcookies.add(name)
-        
+        cookie = self.cookies.get(name, {})
+        cookie['expired'] = True
+        self.cookies[name] = cookie
+    
     def setHeader(self, name, value):
         self.headers[name] = value
         
@@ -29,7 +32,7 @@ class DummyRequest(object):
         return name in self.cookies
     
     def __getitem__(self, name):
-        return self.cookies[name]
+        return self.cookies[name]['value']
         
 class DummyContext(object):
     def absolute_url(self):
