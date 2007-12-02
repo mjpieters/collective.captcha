@@ -21,7 +21,7 @@ captchas are not transferrable between sites.
 Installing
 ----------
 
-This package requires Plone 3.0 or later and SkimpyGimpy_.
+This package requires Plone 2.5 or later and SkimpyGimpy_.
 
 Installing without buildout
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
