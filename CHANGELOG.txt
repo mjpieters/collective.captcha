@@ -5,6 +5,8 @@ collective.captcha changes
 1.2 (svn/unreleased)
 --------------------
 
+- Add a captcha field and widget for zope.formlib.
+
 1.1 (2007-11-21)
 ----------------
 

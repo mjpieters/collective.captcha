@@ -1,16 +1,21 @@
 import os
 from setuptools import setup, find_packages
 
+here = os.path.dirname(__file__)
+
 version = '1.2'
 
 setup(name='collective.captcha',
       version=version,
       description="Stateless captcha generation and verification",
-      long_description=open(
-        os.path.join(os.path.dirname(__file__), 'README.txt')).read(),
-      # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
+      long_description=open(os.path.join(here, "README.txt")).read() + \
+                       open(os.path.join(here, "CHANGELOG.txt")).read(),
       classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Framework :: Plone",
         "Framework :: Zope2",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: GNU General Public License (GPL)",
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
         ],
@@ -26,9 +31,5 @@ setup(name='collective.captcha',
       install_requires=[
           'setuptools',
           # SkimpyGimpy has no pypi entry
-          # -*- Extra requirements: -*-
-      ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
+      ]
       )
