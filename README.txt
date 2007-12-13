@@ -75,7 +75,8 @@ will take care of updating your system.
 Using the view
 --------------
 
-See the captcha.txt doctest in the collective.captcha.browser package.
+See the captcha.txt doctest in the collective.captcha.browser package, as well
+as captcha.txt in collective.captcha.form.
 
 Copyright and credits
 ----------------------
