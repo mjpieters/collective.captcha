@@ -15,3 +15,5 @@ collective.captcha.form.Captcha field to your schema, and away you go:
 
 and formlib will take care of the rest. The widget associated with this field 
 will render the captcha and verify the user input automatically.
+
+TODO: turn this into a proper doctest testing the widget.
