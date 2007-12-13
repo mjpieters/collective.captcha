@@ -1,1 +1,2 @@
-include CHANGELOG.txt
+global-include *.txt
+global-include *.zcml
