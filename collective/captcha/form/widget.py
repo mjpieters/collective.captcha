@@ -1,5 +1,6 @@
 from zope.component import getMultiAdapter
 from zope.app.form.browser import ASCIIWidget
+from zope.app.form.interfaces import ConversionError
 from zope.app.form.browser.textwidgets import renderElement
 from zope.i18n import MessageFactory
 
@@ -28,3 +29,10 @@ class CaptchaWidget(ASCIIWidget):
          captcha.audio_url(),
          _(u"Listen to audio for this captcha"),
          renderElement(self.tag, **kwargs))
+         
+    def _toFieldValue(self, input):
+        # Verify the user input against the captcha
+        captcha = getMultiAdapter((aq_inner(self.context.context), self.request), name='captcha')
+        if not captcha.verify(input):
+            raise ConversionError(_(u'The code you entered was wrong, please enter the new one.'))
+        return super(CaptchaWidget, self)._toFieldValue(input)
