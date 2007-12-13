@@ -17,7 +17,7 @@ from Products.Five import BrowserView
 
 from interfaces import ICaptchaView
 
-CHARS = 'abcdefghjklmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789@:.-/'
+CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 # note: no 0/o/O and i/I/1 confusion
 
 COOKIE_ID = 'captchasessionid'
