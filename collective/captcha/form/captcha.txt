@@ -1,0 +1,19 @@
+--------------------------
+Captchas in a formlib form
+--------------------------
+
+Using collective.captcha in a formlib form is exceedingly simple. Just add a
+collective.captcha.form.Captcha field to your schema, and away you go:
+
+  >>> from zope.interface import Interface
+  >>> from collective.captcha.form import Captcha
+  >>> class CaptchaSchema(Interface):
+  ...     captcha = Captcha(
+  ...         title=_(u'Type the code'),
+  ...         description=_(u'Type the code from the picture shown below or '
+  ...                       u'from the audio.'))
+
+and formlib will take care of the rest. The widget associated with this field 
+will render the captcha and verify the user input automatically.
+
+TODO: turn this into a proper doctest testing the widget.

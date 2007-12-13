@@ -7,6 +7,10 @@ collective.captcha changes
 
 - Add a captcha field and widget for zope.formlib.
 
+- Reduced the characters used to generate the captcha to uppercase letters and
+  numbers only; user testing showed that even humans had trouble solving the
+  captchas.
+
 1.1 (2007-11-21)
 ----------------
 
