@@ -1,2 +1,1 @@
-include CHANGELOG.txt
-recursive-include *.txt
+global-include *.txt
