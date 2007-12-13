@@ -8,7 +8,7 @@ version = '1.2'
 setup(name='collective.captcha',
       version=version,
       description="Stateless captcha generation and verification",
-      long_description=open(os.path.join(here, "README.txt")).read() + \
+      long_description=open(os.path.join(here, "README.txt")).read() + '\n' + \
                        open(os.path.join(here, "CHANGELOG.txt")).read(),
       classifiers=[
         "Development Status :: 5 - Production/Stable",
