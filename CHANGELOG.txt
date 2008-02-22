@@ -5,6 +5,9 @@ collective.captcha changes
 1.3 (svn/unreleased)
 --------------------
 
+- SkimpyGimpy now does have an egg, thanks to Reed O'Brien! Updated 
+  installation instructions and setup.py.
+
 1.2 (2007-12-13)
 ----------------
 

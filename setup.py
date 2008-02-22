@@ -30,6 +30,6 @@ setup(name='collective.captcha',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          # SkimpyGimpy has no pypi entry
+          'skimpyGimpy',
       ]
       )

@@ -21,21 +21,14 @@ captchas are not transferrable between sites.
 Installing
 ----------
 
-This package requires Plone 2.5 or later and SkimpyGimpy_.
+This package requires Plone 2.5 or later.
 
 Installing without buildout
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-First install SkimpyGimpy. You can install this in either the system python
-path or in the lib/python directory of your Zope instance, using the setup.py
-script in the SkimpyGimpy source. If you want to install SkimpyGimpy inside
-your Zope instance instead of system wide you can its ''--prefix='' option to
-install in the ''lib/python'' directory of your Zope instance.
-
-Next you need to install this package. This can also be done by installing it
-in either your system path packages or in the lib/python directory of your
-Zope instance. You can do this using either easy_install or via the setup.py
-script.
+Install this package in either your system path packages or in the lib/python
+directory of your Zope instance. You can do this using either easy_install or
+via the setup.py script.
 
 After installing the package it needs to be registered in your Zope instance.
 This can be done by putting a collective.captcha-configure.zcml file in the
@@ -50,10 +43,8 @@ Installing with buildout
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you are using `buildout`_ to manage your instance installing
-collective.captcha is even simpler. Unfortunately SkimpyGimpy is not yet
-easily installed using buildout, you'll still need to install that manually.
-You can install collective.captcha by adding it to the eggs line for your
-instance::
+collective.captcha is even simpler. You can install collective.captcha by
+adding it to the eggs line for your instance::
 
   [instance]
   eggs = collective.captcha
@@ -69,7 +60,6 @@ buildout will detect this automatically.
 After updating the configuration you need to run the ''bin/buildout'', which
 will take care of updating your system.
 
-.. _SkimpyGimpy: http://skimpygimpy.sourceforge.net/
 .. _buildout: http://pypi.python.org/pypi/zc.buildout
 
 Using the view
