@@ -38,7 +38,7 @@ doesn't actually give us the word, but we can replay an existing session for the
 
 The verify method, then, tells you if the user entered the correct word:
 
-  >>> view.verify('np7EF-B')
+  >>> view.verify('DLXV4XV')
   True
   
 Note that the view immediately invalidates the cookie by expiring it:
@@ -48,13 +48,13 @@ Note that the view immediately invalidates the cookie by expiring it:
   
 The verify method works case-insensitively:
 
-  >>> view.verify('NP7ef-b')
+  >>> view.verify('dlxv4xv')
   True
   
 The words are valid for a 10 minute period, with a new word for the session every
 5 minutes. Thus, the word for the previous 5 minute period should still be valid:
 
-  >>> view.verify('HmV49.C')
+  >>> view.verify('YMFRQWT')
   True
   
   To facilitate displaying a new captcha when verification fails or validation 
@@ -72,7 +72,7 @@ Verification will fail for both incorrect input and a missing cookie:
   >>> view.verify('incorrect')
   False
   >>> del request2.cookies[COOKIE_ID]
-  >>> view.verify('np7EF-B')
+  >>> view.verify('DLXV4XV')
   False
 
 Displaying

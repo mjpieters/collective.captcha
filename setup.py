@@ -8,7 +8,7 @@ version = '1.3'
 setup(name='collective.captcha',
       version=version,
       description="Stateless captcha generation and verification",
-      long_description=open(os.path.join(here, "README.txt")).read() + \
+      long_description=open(os.path.join(here, "README.txt")).read() + '\n' + \
                        open(os.path.join(here, "CHANGELOG.txt")).read(),
       classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -30,6 +30,6 @@ setup(name='collective.captcha',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          # SkimpyGimpy has no pypi entry
+          'skimpyGimpy',
       ]
       )
