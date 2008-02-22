@@ -8,6 +8,8 @@ collective.captcha changes
 - SkimpyGimpy now does have an egg, thanks to Reed O'Brien! Updated 
   installation instructions and setup.py.
 
+- Update test to reflect reduced character set used.
+
 1.2 (2007-12-13)
 ----------------
 
