@@ -10,10 +10,12 @@ import time
 from skimpyGimpy import skimpyAPI
 
 from zope.interface import implements
+from zope.component import getUtility
 from Acquisition import aq_inner
 from App.config import getConfiguration
 from Globals import package_home
 from Products.Five import BrowserView
+from plone.keyring.interfaces import IKeyManager
 
 from interfaces import ICaptchaView
 
@@ -26,17 +28,6 @@ WORDLENGTH = 7
 _package_home = package_home(globals())
 WAVSOUNDS = os.path.join(_package_home, 'waveIndex.zip')
 VERAMONO = os.path.join(_package_home, 'arevmoit.bdf')
-
-# Compute a local secret that is semi-unique to a ZEO cluster or standalone
-# Zope. This is not rock-solid, but enough to deter spam-bots. Note that this
-# assumes Zope clients in a cluster will all have the same <zodb_db *>
-# sections. This keeps Captchas from being predictable
-_conf = getConfiguration()
-SEKRIT = []
-for db in _conf.databases:
-    SEKRIT.append(repr(db.config.storage.config.__dict__))
-SEKRIT = ''.join(SEKRIT)
-SEKRIT = re.sub('at 0x[a-f0-9]+>', 'at MEMORYADDRESS>', SEKRIT)
 
 _TEST_TIME = None
 
@@ -68,8 +59,9 @@ class Captcha(BrowserView):
         """
         session = self.request[COOKIE_ID]
         nowish = _TEST_TIME or int(time.time() / 300)
-        seeds = [sha.new(SEKRIT + session + str(nowish)).digest(),
-                 sha.new(SEKRIT + session + str(nowish - 5)).digest()]
+        secret = getUtility(IKeyManager).secret()
+        seeds = [sha.new(secret + session + str(nowish)).digest(),
+                 sha.new(secret + session + str(nowish - 5)).digest()]
         
         words = []
         for seed in seeds:

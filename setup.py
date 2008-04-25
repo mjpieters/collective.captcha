@@ -31,5 +31,6 @@ setup(name='collective.captcha',
       install_requires=[
           'setuptools',
           'skimpyGimpy',
+          'plone.keyring',
       ]
       )
