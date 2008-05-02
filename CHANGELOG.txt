@@ -2,8 +2,11 @@
 collective.captcha changes
 --------------------------
 
-1.4 (svn/unreleased)
+1.5 (svn/unreleased)
 --------------------
+
+1.4 (2008-05-02)
+----------------
 
 - Switched to using plone.keyring to provide the secret.
 
