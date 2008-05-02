@@ -21,18 +21,19 @@ captchas are not transferrable between sites.
 Installing
 ----------
 
-This package requires Plone 2.5 or later.
+This package requires Plone 2.5 or later, and plone.keyring 1.1 or later.
 
 Installing without buildout
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Install this package in either your system path packages or in the lib/python
 directory of your Zope instance. You can do this using either easy_install or
-via the setup.py script.
+via the setup.py script. You'll also need to install plone.keyring in the same
+fashion.
 
 After installing the package it needs to be registered in your Zope instance.
 This can be done by putting a collective.captcha-configure.zcml file in the
-etc/pakage-includes directory with this content::
+etc/package-includes directory with this content::
 
   <include package="collective.captcha" />
 
@@ -58,9 +59,15 @@ directly you do not need to specify anything in the buildout configuration:
 buildout will detect this automatically.
 
 After updating the configuration you need to run the ''bin/buildout'', which
-will take care of updating your system.
+will take care of updating your system, including installing the plone.keyring
+dependency.
 
 .. _buildout: http://pypi.python.org/pypi/zc.buildout
+
+Registering plone.keyring KeyManager
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+On any Plone version prior to 3.1, you'll need to make sure that the plone.keyring KeyManager utility has been registered. In the Zope ZMI, use the portal_setup tool to run the plone.keyring KeyManager registration profile.
 
 Using the view
 --------------
