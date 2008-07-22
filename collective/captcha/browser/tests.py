@@ -34,6 +34,14 @@ class DummyRequest(object):
     
     def __getitem__(self, name):
         return self.cookies[name]['value']
+
+    def get(self, name, default=None):
+        if name in self:
+            return self[name]
+        return default
+
+    def set(self, name, value):
+        self.cookies[name] = {'value': value}
         
 class DummyContext(object):
     def absolute_url(self):

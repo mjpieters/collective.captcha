@@ -96,3 +96,109 @@ audio file:
   True
   >>> request.headers['content-type']
   'audio/wav'
+
+Bugs
+----
+
+Verify DummyRequest get/set works
+
+  >>> request = DummyRequest()
+  >>> request.get('dummy', '')
+  ''
+  >>> request.set('dummy', 'foo')
+  >>> request.get('dummy', '')
+  'foo'
+
+Bug: view.image() and view.audio() raise exceptions if there is no cookie
+
+  >>> request = DummyRequest()
+  >>> view = Captcha(context, request)
+
+  >>> view._session_id is None
+  True
+
+  >>> COOKIE_ID in request
+  False
+
+  >>> COOKIE_ID in request.response.cookies
+  False
+
+  >>> image = view.image()
+  >>> image.startswith('\x89PNG')
+  True
+  >>> request.headers['content-type']
+  'image/png'
+
+After the fix, we get a new session id and cookie instead
+
+  >>> view._session_id is None
+  False
+
+  >>> COOKIE_ID in request
+  True
+
+  >>> COOKIE_ID in request.response.cookies
+  True
+
+Same for audio
+
+  >>> request = DummyRequest()
+  >>> view = Captcha(context, request)
+
+  >>> audio = view.audio()
+  >>> audio.startswith('RIFF')
+  True
+  >>> request.headers['content-type']
+  'audio/wav'
+
+  >>> view._session_id is None
+  False
+
+  >>> COOKIE_ID in request
+  True
+
+  >>> COOKIE_ID in request.response.cookies
+  True
+
+Now execute the "impossible" branch, session_id without cookie:
+
+  >>> request = DummyRequest()
+  >>> view = Captcha(context, request)
+  >>> view._session_id = 'foo'
+
+  >>> image = view.image()
+  >>> image.startswith('\x89PNG')
+  True
+  >>> request.headers['content-type']
+  'image/png'
+
+  >>> view._session_id
+  'foo'
+
+  >>> COOKIE_ID in request
+  True
+
+  >>> COOKIE_ID in request.response.cookies
+  True
+
+Same for audio
+
+  >>> request = DummyRequest()
+  >>> view = Captcha(context, request)
+  >>> view._session_id = 'foo'
+
+  >>> audio = view.audio()
+  >>> audio.startswith('RIFF')
+  True
+  >>> request.headers['content-type']
+  'audio/wav'
+
+  >>> view._session_id
+  'foo'
+
+  >>> COOKIE_ID in request
+  True
+
+  >>> COOKIE_ID in request.response.cookies
+  True
+
