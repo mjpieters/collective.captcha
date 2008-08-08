@@ -23,7 +23,7 @@ We can now use the view to generate an image tag, and a audio_url:
 
 The request now holds the state in a cookie:
 
-  >>> COOKIE_ID in request.cookies
+  >>> COOKIE_ID in request.response.cookies
   True
   
 Verification
@@ -32,9 +32,9 @@ Verification
 With that state, we can verify that the user has given us the correct word. The view
 doesn't actually give us the word, but we can replay an existing session for the test:
 
-  >>> request2 = DummyRequest()
-  >>> request2.setCookie(COOKIE_ID, '6552fec8867ee2a85a44784dda007e49efcf50ef')
-  >>> view = Captcha(context, request2)
+  >>> request = DummyRequest()
+  >>> request.cookies[COOKIE_ID] = '6552fec8867ee2a85a44784dda007e49efcf50ef'
+  >>> view = Captcha(context, request)
 
 The verify method, then, tells you if the user entered the correct word:
 
@@ -43,8 +43,8 @@ The verify method, then, tells you if the user entered the correct word:
   
 Note that the view immediately invalidates the cookie by expiring it:
 
-  >>> request2.cookies[COOKIE_ID].get('expired', False)
-  True
+  >>> request.response.cookies[COOKIE_ID].get('expires', '')
+  'Wed, 31-Dec-97 23:59:59 GMT'
   
 The verify method works case-insensitively:
 
@@ -57,22 +57,33 @@ The words are valid for a 10 minute period, with a new word for the session ever
   >>> view.verify('YMFRQWT')
   True
   
-  To facilitate displaying a new captcha when verification fails or validation 
-  of a form fails for other reasons, the view makes sure to not expire the 
-  cookie but to set a new value instead:
-
-    >>> view2 = Captcha(context, request2)
-    >>> view2.audio_url()
-    'dummyurl/@@captcha/audio'
-    >>> request2.cookies[COOKIE_ID].get('expired', False)
-    False
-
 Verification will fail for both incorrect input and a missing cookie:
 
   >>> view.verify('incorrect')
   False
-  >>> del request2.cookies[COOKIE_ID]
+
+  >>> del request.other[COOKIE_ID]
+  >>> del request.cookies[COOKIE_ID]
   >>> view.verify('DLXV4XV')
+  False
+
+To facilitate displaying a new captcha when verification fails or validation 
+of a form fails for other reasons, the view makes sure to not expire the 
+cookie but to set a new value instead:
+
+  >>> request = DummyRequest()
+  >>> request.response.setCookie(COOKIE_ID, '6552fec8867ee2a85a44784dda007e49efcf50ef')
+  >>> view = Captcha(context, request)
+
+  >>> request.response.cookies[COOKIE_ID].get('value', '') == '6552fec8867ee2a85a44784dda007e49efcf50ef'
+  True
+
+  >>> view.audio_url()
+  'dummyurl/@@captcha/audio'
+
+  >>> request.response.cookies[COOKIE_ID].get('expires', False)
+  False
+  >>> request.response.cookies[COOKIE_ID].get('value', '') == '6552fec8867ee2a85a44784dda007e49efcf50ef'
   False
 
 Displaying
@@ -82,34 +93,25 @@ The point of course is that the end-user gets to view the captcha image or liste
 audio file:
 
   >>> request = DummyRequest()
-  >>> request.setCookie(COOKIE_ID, '6552fec8867ee2a85a44784dda007e49efcf50ef')
+  >>> request.cookies[COOKIE_ID] = '6552fec8867ee2a85a44784dda007e49efcf50ef'
   >>> view = Captcha(context, request)
 
   >>> image = view.image()
   >>> image.startswith('\x89PNG')
   True
-  >>> request.headers['content-type']
+  >>> request.response.headers['content-type']
   'image/png'
 
   >>> audio = view.audio()
   >>> audio.startswith('RIFF')
   True
-  >>> request.headers['content-type']
+  >>> request.response.headers['content-type']
   'audio/wav'
 
 Bugs
 ----
 
-Verify DummyRequest get/set works
-
-  >>> request = DummyRequest()
-  >>> request.get('dummy', '')
-  ''
-  >>> request.set('dummy', 'foo')
-  >>> request.get('dummy', '')
-  'foo'
-
-Bug: view.image() and view.audio() raise exceptions if there is no cookie
+view.image() and view.audio() raise exceptions if there is no cookie
 
   >>> request = DummyRequest()
   >>> view = Captcha(context, request)
@@ -126,7 +128,7 @@ Bug: view.image() and view.audio() raise exceptions if there is no cookie
   >>> image = view.image()
   >>> image.startswith('\x89PNG')
   True
-  >>> request.headers['content-type']
+  >>> request.response.headers['content-type']
   'image/png'
 
 After the fix, we get a new session id and cookie instead
@@ -148,7 +150,7 @@ Same for audio
   >>> audio = view.audio()
   >>> audio.startswith('RIFF')
   True
-  >>> request.headers['content-type']
+  >>> request.response.headers['content-type']
   'audio/wav'
 
   >>> view._session_id is None
@@ -169,7 +171,7 @@ Now execute the "impossible" branch, session_id without cookie:
   >>> image = view.image()
   >>> image.startswith('\x89PNG')
   True
-  >>> request.headers['content-type']
+  >>> request.response.headers['content-type']
   'image/png'
 
   >>> view._session_id
@@ -190,7 +192,7 @@ Same for audio
   >>> audio = view.audio()
   >>> audio.startswith('RIFF')
   True
-  >>> request.headers['content-type']
+  >>> request.response.headers['content-type']
   'audio/wav'
 
   >>> view._session_id

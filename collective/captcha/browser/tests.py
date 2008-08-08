@@ -7,41 +7,17 @@ from plone.keyring.interfaces import IKeyManager
 import collective.captcha.browser.captcha as captcha
 captcha._TEST_TIME = 5
 
-class DummyRequest(object):
+# Use a real Request and Response; there are too many subtleties
+from ZPublisher.Request import Request
+from ZPublisher.Response import Response
+
+class DummyRequest(Request):
+
     def __init__(self):
-        self.cookies = {}
-        self.headers = {}
-    
-    @property
-    def response(self):
-        return self
-    
-    def setCookie(self, name, value, path=None):
-        cookie = self.cookies.get(name, {})
-        cookie.update(dict(value=value, path=path))
-        self.cookies[name] = cookie
-    
-    def expireCookie(self, name, path=None):
-        cookie = self.cookies.get(name, {})
-        cookie['expired'] = True
-        self.cookies[name] = cookie
-    
-    def setHeader(self, name, value):
-        self.headers[name] = value
-        
-    def __contains__(self, name):
-        return name in self.cookies
-    
-    def __getitem__(self, name):
-        return self.cookies[name]['value']
-
-    def get(self, name, default=None):
-        if name in self:
-            return self[name]
-        return default
-
-    def set(self, name, value):
-        self.cookies[name] = {'value': value}
+        env = {'SERVER_NAME': 'nohost',
+               'SERVER_PORT': '80',
+               'REQUEST_METHOD': 'GET'}
+        Request.__init__(self, None, env, Response())
         
 class DummyContext(object):
     def absolute_url(self):
