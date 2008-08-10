@@ -37,18 +37,33 @@ class Captcha(BrowserView):
     _session_id = None
     __name__ = 'captcha'
     
+    def _setcookie(self, id):
+        """Set the session cookie"""
+        resp = self.request.response
+        if COOKIE_ID in resp.cookies:
+            # clear the cookie first, clearing out any expiration cookie
+            # that may have been set during verification
+            del resp.cookies[COOKIE_ID]
+        resp.setCookie(COOKIE_ID, id, path='/')
+
     def _generate_session(self):
-        """Ensure a session id exists"""
+        """Create a new session id"""
         if self._session_id is None:
             id = sha.new(str(random.randrange(sys.maxint))).hexdigest()
             self._session_id = id
-            
-            resp = self.request.response
-            if COOKIE_ID in resp.cookies:
-                # clear the cookie first, clearing out any expiration cookie
-                # that may have been set during verification
-                del resp.cookies[COOKIE_ID]
-            resp.setCookie(COOKIE_ID, id, path='/')
+            self._setcookie(id)
+
+    def _verify_session(self):
+        """Ensure session id and cookie exist"""
+        if not self.request.has_key(COOKIE_ID):
+            if self._session_id is None:
+                # This may happen e.g. when the user clicks the back button
+                self._generate_session()
+            else:
+                # This may happen e.g. when the user does not accept the cookie
+                self._setcookie(self._session_id)
+            # Put the cookie value into the request for immediate consumption
+            self.request.cookies[COOKIE_ID] = self._session_id
     
     def _generate_words(self):
         """Create words for the current session
@@ -107,11 +122,13 @@ class Captcha(BrowserView):
         
     def image(self):
         """Generate a captcha image"""
+        self._verify_session()
         self._setheaders('image/png')
         return skimpyAPI.Png(self._generate_words()[0],
                              fontpath=VERAMONO).data()
     
     def audio(self):
         """Generate a captcha audio file"""
+        self._verify_session()
         self._setheaders('audio/wav')
         return skimpyAPI.Wave(self._generate_words()[0], WAVSOUNDS).data()
