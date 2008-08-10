@@ -88,14 +88,15 @@ class Captcha(BrowserView):
         return words
     
     def _url(self, type):
-        self._generate_session()
         return '%s/@@%s/%s' % (
             aq_inner(self.context).absolute_url(), self.__name__, type)
     
     def image_tag(self):
+        self._generate_session()
         return '<img src="%s" />' % (self._url('image'),)
     
     def audio_url(self):
+        self._generate_session()
         return self._url('audio')
         
     def verify(self, input):
