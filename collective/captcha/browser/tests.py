@@ -12,7 +12,6 @@ from ZPublisher.Request import Request
 from ZPublisher.Response import Response
 
 class DummyRequest(Request):
-
     def __init__(self):
         env = {'SERVER_NAME': 'nohost',
                'SERVER_PORT': '80',
