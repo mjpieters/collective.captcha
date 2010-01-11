@@ -2,8 +2,8 @@
 collective.captcha changes
 --------------------------
 
-1.5 (svn/unreleased)
---------------------
+1.5 (2010-01-11)
+----------------
 
 - Fixed http://plone.org/products/collective.captcha/issues/3.
   [stefan]
