@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="collective.captcha">
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="collective.captcha.form.interfaces.ICaptcha"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".widget.CaptchaWidget"
+      permission="zope.Public"
+      />
+
+</configure>

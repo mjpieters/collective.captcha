@@ -1,0 +1,50 @@
+--------------------------
+collective.captcha changes
+--------------------------
+
+1.6 (unreleased)
+----------------
+
+- ...
+
+1.5 (2010-01-11)
+----------------
+
+- Fixed http://plone.org/products/collective.captcha/issues/3.
+  [stefan]
+
+1.4 (2008-05-02)
+----------------
+
+- Switched to using plone.keyring to provide the secret.
+
+1.3 (2008-02-22)
+----------------
+
+- SkimpyGimpy now does have an egg, thanks to Reed O'Brien! Updated 
+  installation instructions and setup.py.
+
+- Update test to reflect reduced character set used.
+
+1.2 (2007-12-13)
+----------------
+
+- Add a captcha field and widget for zope.formlib.
+
+- Reduced the characters used to generate the captcha to uppercase letters and
+  numbers only; user testing showed that even humans had trouble solving the
+  captchas.
+
+1.1 (2007-11-21)
+----------------
+
+- Delete the captcha cookie from the response if one is present to
+  prevent premature expiration. This would happen when creating a
+  new captcha after verification (because verification failed or
+  the form would have to be redisplayed for other reasons). Thanks to
+  David Glick for pointing this out.
+
+1.0 (2007-11-19)
+----------------
+
+- Initial release

@@ -1,0 +1,4 @@
+global-include *.txt
+global-include *.zcml
+include collective/captcha/browser/*.bdf
+include collective/captcha/browser/*.zip

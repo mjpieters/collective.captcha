@@ -1,0 +1,11 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="collective.captcha">
+
+    <include package="plone.keyring" />
+    <include package=".browser" />
+    <include package=".form"
+             zcml:condition="installed zope.app.form"/>
+
+</configure>
