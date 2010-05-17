@@ -136,9 +136,8 @@ class Captcha(BrowserView):
         self._setheaders('audio/wav')
 	
         context = aq_inner(self.context)
-        portal_properties = getToolByName(context, 'portal_properties')
-        site_properties = getattr(portal_properties, 'site_properties')
-        default_language = site_properties.getProperty('default_language',None)
+        portal_languages= getToolByName(self.context,'portal_languages') 
+        default_language = portal_languages.getLanguageBindings()[0] 
 
         wave_name = 'waveIndex-%s.zip' % default_language[0:2]
         if(os.path.exists(os.path.join(_package_home, wave_name))):
