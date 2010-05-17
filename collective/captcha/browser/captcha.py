@@ -19,7 +19,7 @@ from plone.keyring.interfaces import IKeyManager
 
 from interfaces import ICaptchaView
 
-from zope.component import getMultiAdapter
+from Products.CMFCore.utils import getToolByName
 
 CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 # note: no 0/o/O and i/I/1 confusion
@@ -135,14 +135,15 @@ class Captcha(BrowserView):
         self._verify_session()
         self._setheaders('audio/wav')
 	
-        try:
-            context = aq_inner(self.context)
-            portal_state = getMultiAdapter((context, self.request), name=u'plone_portal_state')
-            current_language = portal_state.language()
+        context = aq_inner(self.context)
+        portal_properties = getToolByName(context, 'portal_properties')
+        site_properties = getattr(portal_properties, 'site_properties')
+        default_language = site_properties.getProperty('default_language',None)
 
-            wave_name = 'waveIndex-%s.zip' % current_language[0:2]
+        wave_name = 'waveIndex-%s.zip' % default_language[0:2]
+        if(os.path.exists(os.path.join(_package_home, wave_name))):
             WAVSOUNDS = os.path.join(_package_home, wave_name)
-        except:
+        else:
             WAVSOUNDS = os.path.join(_package_home,"waveIndex-en.zip")
 
         return skimpyAPI.Wave(self._generate_words()[0], WAVSOUNDS).data()
