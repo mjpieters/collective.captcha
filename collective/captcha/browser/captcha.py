@@ -1,9 +1,7 @@
-# Zope Captcha generation
+h# Zope Captcha generation
 import os.path
 import random
-import re
 import sha
-import string
 import sys
 import time
 
@@ -12,7 +10,6 @@ from skimpyGimpy import skimpyAPI
 from zope.interface import implements
 from zope.component import getUtility
 from Acquisition import aq_inner
-from App.config import getConfiguration
 from Globals import package_home
 from Products.Five import BrowserView
 from plone.keyring.interfaces import IKeyManager
