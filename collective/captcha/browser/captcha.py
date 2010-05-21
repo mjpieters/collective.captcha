@@ -70,10 +70,10 @@ class Captcha(BrowserView):
         
         """
         session = self.request[COOKIE_ID]
-        nowish = _TEST_TIME or int(time.time() / 300)
+        nowish = int((_TEST_TIME or time.time()) / 300)
         secret = getUtility(IKeyManager).secret()
         seeds = [sha.new(secret + session + str(nowish)).digest(),
-                 sha.new(secret + session + str(nowish - 5)).digest()]
+                 sha.new(secret + session + str(nowish - 1)).digest()]
         
         words = []
         for seed in seeds:

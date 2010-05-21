@@ -5,7 +5,7 @@ from plone.keyring.interfaces import IKeyManager
 
 # Set the secret and test time to constants to keep the tests workable
 import collective.captcha.browser.captcha as captcha
-captcha._TEST_TIME = 5
+captcha._TEST_TIME = 1500
 
 # Use a real Request and Response; there are too many subtleties
 from ZPublisher.Request import Request

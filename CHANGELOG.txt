@@ -5,7 +5,9 @@ collective.captcha changes
 1.6 (unreleased)
 ----------------
 
-- ...
+- Correctly calculate the word for the next time period. Fixes
+  http://plone.org/products/collective.captcha/issues/4.
+  [mj]
 
 1.5 (2010-01-11)
 ----------------
