@@ -5,7 +5,8 @@ Captchas
 Generation
 ----------
 
-To use the captcha view, simply look up the view using the component architecture.
+To use the captcha view, simply look up the view using the component
+architecture.
 
 Here, we'll just import the view directly to demonstrate it's use:
 
@@ -29,11 +30,13 @@ The request now holds the state in a cookie:
 Verification
 ------------
 
-With that state, we can verify that the user has given us the correct word. The view
-doesn't actually give us the word, but we can replay an existing session for the test:
+With that state, we can verify that the user has given us the correct word.
+The view doesn't actually give us the word, but we can replay an existing
+session for the test:
 
   >>> request = DummyRequest()
-  >>> request.cookies[COOKIE_ID] = '6552fec8867ee2a85a44784dda007e49efcf50ef'
+  >>> session_id = '6552fec8867ee2a85a44784dda007e49efcf50ef'
+  >>> request.cookies[COOKIE_ID] = session_id
   >>> view = Captcha(context, request)
 
 The verify method, then, tells you if the user entered the correct word:
@@ -51,12 +54,13 @@ The verify method works case-insensitively:
   >>> view.verify('dlxv4xv')
   True
   
-The words are valid for a 10 minute period, with a new word for the session every
-5 minutes. Thus, the word for the previous 5 minute period should still be valid:
+The words are valid for a 10 minute period, with a new word for the session
+every 5 minutes. Thus, the word for the previous 5 minute period should still
+be valid:
 
   >>> view.verify('YMFRQWT')
   True
-  
+
 Verification will fail for both incorrect input and a missing cookie:
 
   >>> view.verify('incorrect')
@@ -72,10 +76,10 @@ of a form fails for other reasons, the view makes sure to not expire the
 cookie but to set a new value instead:
 
   >>> request = DummyRequest()
-  >>> request.response.setCookie(COOKIE_ID, '6552fec8867ee2a85a44784dda007e49efcf50ef')
+  >>> request.response.setCookie(COOKIE_ID, session_id)
   >>> view = Captcha(context, request)
 
-  >>> request.response.cookies[COOKIE_ID].get('value', '') == '6552fec8867ee2a85a44784dda007e49efcf50ef'
+  >>> request.response.cookies[COOKIE_ID].get('value', '') == session_id
   True
 
   >>> view.audio_url()
@@ -83,7 +87,7 @@ cookie but to set a new value instead:
 
   >>> request.response.cookies[COOKIE_ID].get('expires', False)
   False
-  >>> request.response.cookies[COOKIE_ID].get('value', '') == '6552fec8867ee2a85a44784dda007e49efcf50ef'
+  >>> request.response.cookies[COOKIE_ID].get('value', '') == session_id
   False
 
 Displaying
@@ -93,7 +97,7 @@ The point of course is that the end-user gets to view the captcha image or liste
 audio file:
 
   >>> request = DummyRequest()
-  >>> request.cookies[COOKIE_ID] = '6552fec8867ee2a85a44784dda007e49efcf50ef'
+  >>> request.cookies[COOKIE_ID] = session_id
   >>> view = Captcha(context, request)
 
   >>> image = view.image()

@@ -1,4 +1,4 @@
-h# Zope Captcha generation
+# Zope Captcha generation
 import os.path
 import random
 import sha
