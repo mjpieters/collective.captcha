@@ -2,12 +2,18 @@
 collective.captcha changes
 --------------------------
 
-1.6 (unreleased)
+1.6 (2011-05-29)
 ----------------
 
 - Correctly calculate the word for the next time period. Fixes
   http://plone.org/products/collective.captcha/issues/4.
   [mj]
+
+- Adjust imports for Plone 4.1 compatibility.
+  [redcor]
+
+- Explicitely define 'image' and 'audio' as publishable.
+  [cillian]
 
 1.5 (2010-01-11)
 ----------------
