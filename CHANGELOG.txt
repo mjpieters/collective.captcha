@@ -12,6 +12,9 @@ collective.captcha changes
 - Adjust imports for Plone 4.1 compatibility.
   [redcor]
 
+- Explicitely define 'image' and 'audio' as publishable.
+  [cillian]
+
 1.5 (2010-01-11)
 ----------------
 
