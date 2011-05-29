@@ -2,7 +2,10 @@
 collective.captcha changes
 --------------------------
 
-1.6 (unreleased)
+1.7 (unreleased)
+----------------
+
+1.6 (2011-05-29)
 ----------------
 
 - Correctly calculate the word for the next time period. Fixes
