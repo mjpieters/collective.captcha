@@ -9,6 +9,9 @@ collective.captcha changes
   http://plone.org/products/collective.captcha/issues/4.
   [mj]
 
+- Adjust imports for Plone 4.1 compatibility.
+  [redcor]
+
 1.5 (2010-01-11)
 ----------------
 
