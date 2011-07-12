@@ -1,6 +1,7 @@
 import unittest
+import doctest
 from zope.component import provideUtility
-from zope.testing import doctest, cleanup
+from zope.testing import cleanup
 from plone.keyring.interfaces import IKeyManager
 
 # Set the secret and test time to constants to keep the tests workable

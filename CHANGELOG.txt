@@ -5,6 +5,15 @@ collective.captcha changes
 1.7 (unreleased)
 ----------------
 
+- Disuse 'zope.testing.doctest' in favor of stdlib's 'doctest'.
+  [tseaver]
+
+- Suppress 'sha' deprecation under Python 2.6+
+  [tseaver]
+
+- Suppress 'Globals.package_home' deprecation under Zope 2.12+.
+  [tseaver]
+
 1.6 (2011-05-29)
 ----------------
 

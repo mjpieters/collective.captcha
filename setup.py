@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 here = os.path.dirname(__file__)
 
-version = '1.7'
+version = '1.7-dev'
 
 setup(name='collective.captcha',
       version=version,

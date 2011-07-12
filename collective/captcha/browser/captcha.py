@@ -1,7 +1,10 @@
 # Zope Captcha generation
 import os.path
 import random
-import sha
+try:
+    from hashlib import sha1
+except ImportError: # Python < 2.5
+    from sha import new as sha1
 import sys
 import time
 
@@ -10,7 +13,7 @@ from skimpyGimpy import skimpyAPI
 from zope.interface import implements
 from zope.component import getUtility
 from Acquisition import aq_inner
-from Globals import package_home
+from App.Common import package_home
 from Products.Five import BrowserView
 from plone.keyring.interfaces import IKeyManager
 
@@ -46,7 +49,7 @@ class Captcha(BrowserView):
     def _generate_session(self):
         """Create a new session id"""
         if self._session_id is None:
-            id = sha.new(str(random.randrange(sys.maxint))).hexdigest()
+            id = sha1(str(random.randrange(sys.maxint))).hexdigest()
             self._session_id = id
             self._setcookie(id)
 
@@ -72,8 +75,8 @@ class Captcha(BrowserView):
         session = self.request[COOKIE_ID]
         nowish = int((_TEST_TIME or time.time()) / 300)
         secret = getUtility(IKeyManager).secret()
-        seeds = [sha.new(secret + session + str(nowish)).digest(),
-                 sha.new(secret + session + str(nowish - 1)).digest()]
+        seeds = [sha1(secret + session + str(nowish)).digest(),
+                 sha1(secret + session + str(nowish - 1)).digest()]
         
         words = []
         for seed in seeds:
