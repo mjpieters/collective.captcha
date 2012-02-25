@@ -9,7 +9,7 @@
       permission="zope2.Public"
       provides=".interfaces.ICaptchaView"
       class=".captcha.Captcha"
-      allowed_attributes="image audio"
+      allowed_attributes="image audio verify"
       >
     
     <browser:page name="image" attribute="image" />

@@ -14,6 +14,10 @@ collective.captcha changes
 - Suppress 'Globals.package_home' deprecation under Zope 2.12+.
   [tseaver]
 
+- Add `verify` to the list of allowed attributes on the Captcha
+  view, allowing restricted code to verify submitted captchas.
+  [mj]
+
 1.6 (2011-05-29)
 ----------------
 
