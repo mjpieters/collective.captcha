@@ -131,7 +131,8 @@ class Captcha(BrowserView):
         """Generate a captcha image"""
         self._verify_session()
         self._setheaders('image/png')
-        return skimpyAPI.Png(self._generate(), fontpath=VERAMONO).data()
+        return skimpyAPI.Png(self._generate(), speckle=1.5,
+                             fontpath=VERAMONO).data()
 
     def audio(self):
         """Generate a captcha audio file"""
