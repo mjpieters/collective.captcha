@@ -1,12 +1,11 @@
 # Zope Captcha generation
 import os.path
-import random
+from random import getrandbits
+from time import time
 try:
     from hashlib import sha1
 except ImportError: # Python < 2.5
     from sha import new as sha1
-import sys
-import time
 
 from skimpyGimpy import skimpyAPI
 
@@ -30,12 +29,18 @@ WAVSOUNDS = os.path.join(_package_home, 'waveIndex.zip')
 VERAMONO = os.path.join(_package_home, 'arevmoit.bdf')
 
 _TEST_TIME = None
+PERIOD = 300 # captcha will be valid for PERIOD to 2*PERIOD seconds
 
 class Captcha(BrowserView):
     implements(ICaptchaView)
 
     _session_id = None
+    _secret = ''
     __name__ = 'captcha'
+
+    def __init__(self, context, request):
+        super(Captcha, self).__init__(context, request)
+        self._secret = getUtility(IKeyManager).secret()
 
     def _setcookie(self, id):
         """Set the session cookie"""
@@ -49,7 +54,7 @@ class Captcha(BrowserView):
     def _generate_session(self):
         """Create a new session id"""
         if self._session_id is None:
-            id = sha1(str(random.randrange(sys.maxint))).hexdigest()
+            id = hex(getrandbits(64))[2:-1]
             self._session_id = id
             self._setcookie(id)
 
@@ -65,27 +70,29 @@ class Captcha(BrowserView):
             # Put the cookie value into the request for immediate consumption
             self.request.cookies[COOKIE_ID] = self._session_id
 
+    def _generate(self, nowish=None):
+        if nowish is None:
+            nowish = int(time() / PERIOD)
+
+        seed = sha1(self._secret + self.request[COOKIE_ID] + str(nowish)).digest()
+        word = ''
+        for i in xrange(WORDLENGTH):
+            index = ord(seed[i]) % len(CHARS)
+            word += CHARS[index]
+
+        return word
+
     def _generate_words(self):
         """Create words for the current session
 
-        We generate one for the current 5 minutes, plus one for the previous
-        5. This way captcha sessions have a livespan of 10 minutes at most.
+        We generate one for the current PERIOD seconds, plus one for the
+        previous. This way captcha sessions have a livespan of 2 * PERIOD
+        seconds at most.
 
         """
-        session = self.request[COOKIE_ID]
-        nowish = int((_TEST_TIME or time.time()) / 300)
-        secret = getUtility(IKeyManager).secret()
-        seeds = [sha1(secret + session + str(nowish)).digest(),
-                 sha1(secret + session + str(nowish - 1)).digest()]
-
-        words = []
-        for seed in seeds:
-            word = []
-            for i in range(WORDLENGTH):
-                index = ord(seed[i]) % len(CHARS)
-                word.append(CHARS[index])
-            words.append(''.join(word))
-        return words
+        # To prevent a race condition, generate *one* nowish for both periods
+        nowish = int(time() / PERIOD)
+        return (self._generate(nowish), self._generate(nowish - 1))
 
     def _url(self, type):
         return '%s/@@%s/%s' % (
@@ -100,16 +107,15 @@ class Captcha(BrowserView):
         return self._url('audio')
 
     def verify(self, input):
-        result = False
         try:
-            for word in self._generate_words():
-                result = result or input.upper() == word.upper()
+            words = self._generate_words()
             # Delete the session key, we are done with this captcha
             self.request.response.expireCookie(COOKIE_ID, path='/')
         except KeyError:
-            pass # No cookie
-
-        return result
+            # No cookie was present
+            return False
+        input = input.upper()
+        return input == words[0] or input == words[1]
 
     # Binary data subpages
 
@@ -125,11 +131,10 @@ class Captcha(BrowserView):
         """Generate a captcha image"""
         self._verify_session()
         self._setheaders('image/png')
-        return skimpyAPI.Png(self._generate_words()[0],
-                             fontpath=VERAMONO).data()
+        return skimpyAPI.Png(self._generate(), fontpath=VERAMONO).data()
 
     def audio(self):
         """Generate a captcha audio file"""
         self._verify_session()
         self._setheaders('audio/wav')
-        return skimpyAPI.Wave(self._generate_words()[0], WAVSOUNDS).data()
+        return skimpyAPI.Wave(self._generate(), WAVSOUNDS).data()

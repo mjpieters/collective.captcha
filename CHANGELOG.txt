@@ -18,6 +18,9 @@ collective.captcha changes
   view, allowing restricted code to verify submitted captchas.
   [mj]
 
+- Better session id generation & redundant sha1 removal.
+  [serhat]
+
 1.6 (2011-05-29)
 ----------------
 
