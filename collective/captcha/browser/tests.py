@@ -18,7 +18,7 @@ class DummyRequest(Request):
                'SERVER_PORT': '80',
                'REQUEST_METHOD': 'GET'}
         Request.__init__(self, None, env, Response())
-        
+
 class DummyContext(object):
     def absolute_url(self):
         return 'dummyurl'

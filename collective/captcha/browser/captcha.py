@@ -33,10 +33,10 @@ _TEST_TIME = None
 
 class Captcha(BrowserView):
     implements(ICaptchaView)
-    
+
     _session_id = None
     __name__ = 'captcha'
-    
+
     def _setcookie(self, id):
         """Set the session cookie"""
         resp = self.request.response
@@ -64,20 +64,20 @@ class Captcha(BrowserView):
                 self._setcookie(self._session_id)
             # Put the cookie value into the request for immediate consumption
             self.request.cookies[COOKIE_ID] = self._session_id
-    
+
     def _generate_words(self):
         """Create words for the current session
-        
+
         We generate one for the current 5 minutes, plus one for the previous
         5. This way captcha sessions have a livespan of 10 minutes at most.
-        
+
         """
         session = self.request[COOKIE_ID]
         nowish = int((_TEST_TIME or time.time()) / 300)
         secret = getUtility(IKeyManager).secret()
         seeds = [sha1(secret + session + str(nowish)).digest(),
                  sha1(secret + session + str(nowish - 1)).digest()]
-        
+
         words = []
         for seed in seeds:
             word = []
@@ -86,19 +86,19 @@ class Captcha(BrowserView):
                 word.append(CHARS[index])
             words.append(''.join(word))
         return words
-    
+
     def _url(self, type):
         return '%s/@@%s/%s' % (
             aq_inner(self.context).absolute_url(), self.__name__, type)
-    
+
     def image_tag(self):
         self._generate_session()
         return '<img src="%s" />' % (self._url('image'),)
-    
+
     def audio_url(self):
         self._generate_session()
         return self._url('audio')
-        
+
     def verify(self, input):
         result = False
         try:
@@ -108,11 +108,11 @@ class Captcha(BrowserView):
             self.request.response.expireCookie(COOKIE_ID, path='/')
         except KeyError:
             pass # No cookie
-        
+
         return result
-        
+
     # Binary data subpages
-    
+
     def _setheaders(self, type):
         resp = self.request.response
         resp.setHeader('content-type', type)
@@ -120,14 +120,14 @@ class Captcha(BrowserView):
         resp.setHeader('cache-control', 'no-cache, no-store')
         resp.setHeader('pragma', 'no-cache')
         resp.setHeader('expires', 'now')
-        
+
     def image(self):
         """Generate a captcha image"""
         self._verify_session()
         self._setheaders('image/png')
         return skimpyAPI.Png(self._generate_words()[0],
                              fontpath=VERAMONO).data()
-    
+
     def audio(self):
         """Generate a captcha audio file"""
         self._verify_session()
