@@ -32,5 +32,10 @@ setup(name='collective.captcha',
           'setuptools',
           'skimpyGimpy',
           'plone.keyring > 1.0',
-      ]
+      ],
+      extras_require={'test': ['zope.testing', 'zope.component', 'Zope2', 'plone.keyring']},
+      entry_points="""
+      [z3c.autoinclude.plugin]
+      target = plone
+      """,
       )
