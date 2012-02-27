@@ -2,7 +2,7 @@
 collective.captcha changes
 --------------------------
 
-1.7 (unreleased)
+1.7 (2012-02-27)
 ----------------
 
 - Disuse 'zope.testing.doctest' in favor of stdlib's 'doctest'.
